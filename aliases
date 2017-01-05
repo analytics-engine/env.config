@@ -240,8 +240,6 @@ unset OSTYPE
 # shortcuts
 alias get.tsmclient='lynx ftp.software.ibm.com/storage/tivoli-storage-management/maintenance/client'
 alias get.tsmtdpo='lynx ftp.software.ibm.com/storage/tivoli-storage-management/maintenance/tivoli-data-protection/oracle'
-alias webmail='google-chrome https://weboutlookhbg.crumplifeinsurance.com &'
-alias irc.freenode='irssi -c irc.freenode.net -n bitkrusher -w jumpingfirewalkrose'
 
 alias bts.home='btsync --config ~/.btsync/home.cfg'
 alias bts.work='btsync --config ~/.btsync/work.cfg'
