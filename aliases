@@ -1,0 +1,247 @@
+echo "Sourcing alias file"
+
+# Universal
+#
+# su and su commands
+alias SU='sudo su -'
+
+# sourcing
+alias myaliases='source $HOME/.aliases'
+alias myzfunc='source $HOME/.zfunctions'
+alias myfunc='source $HOME/.functions'
+alias myshrc="source $HOME/.$(basename $SHELL)rc"
+
+# ls 
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias ltr='ls -ltr'
+
+# vi/vim
+if [ -e /usr/bin/vim ]; then
+  alias vi=vim
+fi
+
+# get my external IP
+alias myip='curl -s ip.appspot.com'
+
+# SSH Aliases
+MY_SSH_CONFIG="$HOME/.ssh/config"
+if [ -f $MY_SSH_CONFIG ]; then
+#  alias alias.ssh='alias |grep "S\."'
+#  for i in $(grep "^Host" $MY_SSH_CONFIG |grep -v "Host \*" |awk '{print $2}'); do
+#    alias $i="ssh $i"
+#  done
+  for i in $(grep "Host [a-z]" $MY_SSH_CONFIG |awk '{print $2}'); do
+    alias s.$i="ssh $i"
+  done
+
+  unset MY_SSH_CONFIG
+fi
+
+# rdp
+MY_HOSTFILE="$HOME/.hosts.access"
+if [ -f $MY_HOSTFILE ]; then
+  alias R.='alias |grep "R\."'
+  for MY_RDPHOST in $(grep rdp $MY_HOSTFILE |awk '{print $1}'); do
+    for MY_LOGIN in $(grep $MY_RDPHOST $MY_HOSTFILE |awk '{print $3}' |sed 's/:/ /g'); do
+      case $MY_LOGIN in
+        life)
+          MY_AUTHFILE="$HOME/.auth.d/life.auth"
+        ;;
+        life-admin)
+          MY_AUTHFILE="$HOME/.auth.d/life-admin.auth"
+        ;;
+      esac
+      MY_USER=$(grep username $MY_AUTHFILE |sed 's/username=//')
+      MY_DOMAIN=$(grep domain $MY_AUTHFILE |sed 's/domain=//')
+      MY_PASSWORD=$(grep password $MY_AUTHFILE |sed 's/password=//')
+      alias R.$MY_RDPHOST.$MY_LOGIN="xfreerdp -g 1350x700 -u $MY_USER -d $MY_DOMAIN -p $MY_PASSWORD $MY_RDPHOST"
+#     echo "xfreerdp -g 1200x700 -u $USER -d $DOMAIN -p $PASSWORD $HOST"
+    done
+  done
+  
+  unset MY_HOSTFILE
+  unset MY_LOGIN
+  unset MY_RDPHOST
+  unset MY_USER
+  unset MY_DOMAIN
+  unset MY_PASSWORD
+fi
+
+# rsh
+alias rfs01='F_rsh_to_nseries fs01'
+alias rfs02='F_rsh_to_nseries fs02'
+
+# screen
+if [ -e /usr/bin/screen ]; then
+  alias s.='screen -T xterm'
+  alias s='screen -d -r'
+  alias s.list="screen -ls |grep ched |awk '{print $1}' |sed -re 's/^.+\.//'"
+  alias s.mail='s. -S mail alpine'
+  alias s.chat='s. -S chat finch'
+  alias s.lm='s. -S lm lm'
+  alias s.lm.console='s. -S lm.console lm -console'
+  alias s.16='s. -S 16 16'
+  alias s.16.console='s. -S 16.console 16 -console'
+  alias s.17='s. tsm.17'
+  alias s.17.console='s. tsm.17 -console'
+  alias s.lm.comm='s. tsm.lm.comm'
+  alias s.lm.comm.console='s. tsm.lm.comm -console'
+fi
+
+# Directories
+alias cd.bin="cd $HOME/.bin"
+alias cd.bintsm="cd $HOME/.bin/tsm"
+alias cd.binremote="cd $HOME/.bin/remote"
+alias cd.dropbox="cd $HOME/Dropbox"
+alias cd.backup="cd $HOME/Dropbox/Backup/$HOSTNAME"
+alias cd.docs="cd $HOME/Documents"
+alias cd.music="cd $HOME/Music"
+alias cd.sshfs="cd $HOME/Shares/sshfs/"
+alias cd.cifs="cd $HOME/Shares/cifs"
+
+# wireless tools
+alias W.='alias |grep "W\."'
+alias W.show_ssids='F_nearby_ssid'
+alias W.wifi_menu='sudo wifi-menu'
+alias W.list_profiles='netctl list |grep wlp3s0'
+alias W.connect='F_connect_to_my_access_points'
+
+#
+# OS Aliases
+#
+OSTYPE=$(uname)
+
+case $OSTYPE in
+  Linux)
+    echo "---Setting Linux aliases..."
+
+    # function aliases
+    alias setHome="setEnv home"
+    alias setWork="setEnv work"
+    alias TTG='F_close_of_business'
+    alias existRun='F_if_exists_run'
+
+    # enable color support of ls and also add handy aliases
+    if [ -x /usr/bin/dircolors ]; then
+      test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+      alias ls='ls --color=auto'
+      alias dir='dir --color=auto'
+      alias vdir='vdir --color=auto'
+      alias grep='grep --color=auto'
+      alias fgrep='fgrep --color=auto'
+      alias egrep='egrep --color=auto'
+    fi
+
+    # troubleshooting and statistics
+    alias stats.disk='iostat -d -x'
+    alias stats.disk.5secX3reports='iostat -d -x 5 3'
+    alias stats.cpu='mpstat'
+    alias stats.memory='vmstat'
+    alias stats.network='netstat'
+    alias stats.process='pidstat'
+
+    # command
+    alias b.='byobu'
+    alias t.='tshark'
+    alias r.='rdesktop -g1024x768'
+    alias play='mocp -T darkdot_theme'
+    alias ssle='ssl.crypto.sh encrypt'
+    alias ssld='ssl.crypto.sh decrypt'
+    alias ..bashrc=". ~/.bashrc"
+    alias go="gnome-open"
+    alias destroy="shred -n 20 -u -z -v"
+    alias p.='a2ps -R --column=1 -s2'
+    alias start.trayer='trayer --edge left --align left --height 20 --width 10 --expand true'
+    alias dl='aria2c -d ~/Downloads'
+
+    # bluetooth operations
+    alias bt.up='sudo hciconfig hci0 up'
+    alias bt.down='sudo hciconfig hci0 down'
+
+    # Add an "alert" alias for long running commands.  Use like so:
+    #   sleep 10; alert
+    alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+    alias critical_alert='notify-send --urgency=critical -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+    # fuse
+#    alias userspace.automount='afuse -o mount_template="sshfs %r:/ %m" -o unmount_template="fusermount -u -z %m" ~/Shares/sshfs/'
+#    alias userspace.automount.unmount='fusermount -u -z ~/Shares/sshfs/'
+
+    alias gowalk='f_walkReminder'
+
+    # du/df
+    alias du='du -h'
+    alias d1="du -d1"
+    alias d2="du -d2"
+    alias du.summary="du -s"
+    alias ducks='du -cks * |sort -rn |head -11'
+    alias df='df -h'
+
+    # power functions
+    alias off='poweroff'
+
+    # vpn
+    alias ovpn.crumpHBG='sudo openconnect --config=$HOME/hbg.crump.oc.config https://hbgvpn.crumplifeinsurance.com'
+    alias ovpn.crumpSLC='sudo openconnect --config=$HOME/slc.crump.oc.config https://slcvpn.crumplifeinsurance.com'
+
+    # screen
+    alias fox.work='screen -d -m -S FIREFOX.WORK firefox -P Crump --new-instance'
+    alias fox.private='screen -d -m -S FIREFOX.PRIVATE firefox -P Private --new-instance'
+    alias fox.open='screen -d -m -S FIREFOX.OPEN firefox -P Private --new-instance'
+    alias my.proxy.work='screen -d -m -S SSH.PROXY ssh.proxy.pl work'
+    alias my.proxy.home='screen -d -m -S SSH.PROXY ssh.proxy.pl home'
+
+
+  ;;
+  AIX)
+  ;;
+esac
+
+unset OSTYPE
+
+
+#
+# Distribution Aliases
+#
+# Package Managers
+  # APT
+  if [ -e /usr/bin/apt-get ]; then
+    APTGETFUNCTIONS="install update upgrade dist-upgrade remove purge clean autoclean autoremove"
+    for i in $APTGETFUNCTIONS; do
+      alias a.$i="sudo apt-get $i"
+    done
+    alias a.srch='apt-cache search'
+
+    unset APTGETFUNCTIONS
+  fi 
+
+  # YUM
+  if [ -e /usr/bin/dnf ]; then
+    DNFFUNCTIONS="check check-update clean install update upgrade erase search"
+    for i in $DNFFUNCTIONS; do
+      alias d.$i="sudo dnf $i"
+    done
+
+    unset DNFFUNCTIONS
+  fi
+
+  # Pacman
+  if [ -e /usr/bin/pacman ]; then
+    alias p.sys-upgrade="sudo pacman -Syu"
+    alias p.install="sudo pacman -S"
+    alias p.search="pacsearch"
+    alias p.update="sudo pacman -Sy"
+    alias p.listfiles="pacman -Q -l"
+  fi
+
+
+# shortcuts
+alias get.tsmclient='lynx ftp.software.ibm.com/storage/tivoli-storage-management/maintenance/client'
+alias get.tsmtdpo='lynx ftp.software.ibm.com/storage/tivoli-storage-management/maintenance/tivoli-data-protection/oracle'
+alias webmail='google-chrome https://weboutlookhbg.crumplifeinsurance.com &'
+alias irc.freenode='irssi -c irc.freenode.net -n bitkrusher -w jumpingfirewalkrose'
+
+alias bts.home='btsync --config ~/.btsync/home.cfg'
+alias bts.work='btsync --config ~/.btsync/work.cfg'
