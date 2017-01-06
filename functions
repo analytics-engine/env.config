@@ -1,0 +1,66 @@
+echo "$(date +%H:%M:%S) -- ~/.functions -- Sourcing .functions file"
+
+f_config.dropbox () {
+  if [ $(ip link show |grep -c "state UP") -eq 0 ]; then
+    echo "Error (.function file):  Dropbox function cannot start"
+    echo "No network detected"
+    return
+  fi
+
+  echo "Running Dropbox function" >> $LOG
+  DROPBOX_HOME="$HOME/.dropbox"
+  if [ -d $DROPBOX_HOME ]; then
+    echo "---$DROPBOX_HOME exists" >> $LOG
+    if [ $(ps -ef |grep -c [d]ropbox) -eq 0 ]; then
+      echo "---There is no current dropbox function running" >> $LOG
+      echo "---Starting Dropbox" >> $LOG
+      dropbox start
+    else
+      echo "---There is already a Dropbox process running" >> $LOG
+    fi
+  else
+    echo "---$DROPBOX_HOME does not exist.  Ending dropbox function" >> $LOG
+  fi
+}
+
+f_config.java () {
+  if [ -d /opt/java ]; then
+    echo " Java installation found at /opt/java.  Adding Java to PATH" >> $LOG
+    export JAVAHOME="/opt/java"
+    export PATH=$PATH:/opt/java/bin:
+  fi
+
+}
+
+f_set.git() {
+  if [ -z $1 ]; then
+    echo "Usage:  f_set.git GIT_USERNAME"
+    return
+  fi
+
+  PS1=$'\1\r\1\e[7m\1{$(hostname -s)}\1\e[0m\1 '":\$PWD 
+git > "
+  GITHOME="$HOME/Git"
+  . $GITHOME/$1.git
+  cd $GITHOME
+
+  alias g.=hub
+  alias g.commit="hub commit -m"
+  alias g.push="hub push --set-upstream"
+  alias g.pull="hub pull --set-upstream"
+  alias g.push.master="hub push --set-upstream origin master"
+  alias g.push.devel="hub push --set-upstream origin devel"
+  alias g.push.master="hub push --set-upstream origin master"
+  alias g.push.devel="hub push --set-upstream origin devel"
+  alias g.add="hub add -A"
+  alias g.checkout="hub checkout"
+  alias g.branch="hub branch"
+  
+}
+
+f_set.default() {
+  PS1=$'\1\r\1\e[7m\1{$(hostname -s)}\1\e[0m\1 '":\$PWD 
+> "
+  cd
+
+}
