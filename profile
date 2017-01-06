@@ -70,4 +70,6 @@ fi
 
 #eval $(gpg-agent --daemon)
 #gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gnupg/.gpg-agent-info"
-gpg-agent --daemon --write-env-file "${HOME}/.gnupg/.gpg-agent-info" >> $LOG
+#gpg-agent --daemon --write-env-file "${HOME}/.gnupg/.gpg-agent-info" >> $LOG
+gpg-agent --daemon >> $LOG
+

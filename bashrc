@@ -155,3 +155,10 @@ export GPG_TTY
 #if [ $(echo $PATH |grep -c java) -eq 0 ]; then
 #   f_javaConfig
 #fi
+
+### START-Keychain ###
+# Let  re-use ssh-agent and/or gpg-agent between logins
+/usr/bin/keychain $HOME/.ssh/insurance.bisys.org
+source $HOME/.keychain/$HOSTNAME-sh
+### End-Keychain ###
+
