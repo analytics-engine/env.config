@@ -1,4 +1,4 @@
-echo "$(date +%H:%M:%S) -- ~/.functions -- Sourcing .functions file"
+echo "Sourcing .functions file -- ~/.functions"
 
 f_config.dropbox () {
   if [ $(ip link show |grep -c "state UP") -eq 0 ]; then
@@ -63,4 +63,38 @@ f_set.default() {
 > "
   cd
 
+}
+
+f_set.R() {
+  RENV="$HOME/.R.env"
+  if [ -f $RENV ]; then
+    . $RENV
+    WORKDIR="$LAST_R_DIR"
+
+    COMPLETED=0
+    while [ $COMPLETED == 0 ]; do
+      echo "The last working directory for R was:  $LAST_R_DIR"
+      echo "Use this directory again?  (y/n)"
+      read ANSWER
+
+      case $ANSWER in
+        y | Y )
+          echo "Working directory remains $WORKDIR"
+          COMPLETED=1
+        ;;
+        n | N )
+          echo "Enter path to working directory.  Use double quotes if necessary."
+          read WORKDIR
+          echo "LAST_R_DIR=\"$WORKDIR\"" > $RENV
+          COMPLETED=1
+        ;;
+        * )
+        ;;
+      esac
+    done
+  fi
+
+#  cd $(echo $WORKDIR |sed 's/ /\ /g')
+  cd "$WORKDIR"
+  R
 }
