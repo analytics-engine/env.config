@@ -158,7 +158,7 @@ export GPG_TTY
 
 ### START-Keychain ###
 # Let  re-use ssh-agent and/or gpg-agent between logins
-for i in $(ls $HOME/.ssh |grep -v known |grep -v config); do
+for i in $(ls $HOME/.ssh |grep -v .pub |grep -v known |grep -v config); do
   /usr/bin/keychain $HOME/.ssh/$i
 done
 source $HOME/.keychain/$HOSTNAME-sh
