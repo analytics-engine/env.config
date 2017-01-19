@@ -161,6 +161,8 @@ export GPG_TTY
 for i in $(grep -r "BEGIN RSA PRIVATE KEY" $HOME/.ssh/ |awk -F':' '{print $1}'); do
   /usr/bin/keychain $i >> $LOG 2>&1
 done
-source $HOME/.keychain/$HOSTNAME-sh >> $LOG 2>&1
+if [ -f $HOME/.keychain/$HOSTNAME-sh ]; then
+  source $HOME/.keychain/$HOSTNAME-sh >> $LOG 2>&1
+fi
 ### End-Keychain ###
 
