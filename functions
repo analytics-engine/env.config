@@ -33,25 +33,22 @@ f.config.java () {
 }
 
 f.set.git() {
+  GITHOME="$HOME/Git"
   if [ -z $1 ]; then
-    echo "Usage:  f.set.git GIT_USERNAME"
+    echo "Usage:  f.set.git PROJECTNAME"
+    echo "Current Projects:"
+    ls -1 $GITHOME/*.git
     return
   fi
 
   PS1=$'\1\r\1\e[7m\1{$(hostname -s)}\1\e[0m\1 '":\$PWD 
 git > "
-  GITHOME="$HOME/Git"
+
   . $GITHOME/$1.git
   cd $GITHOME
 
   alias g.=hub
   alias g.commit="hub commit -m"
-  alias g.push="hub push --set-upstream"
-  alias g.pull="hub pull --set-upstream"
-  alias g.push.master="hub push --set-upstream origin master"
-  alias g.push.devel="hub push --set-upstream origin devel"
-  alias g.push.master="hub push --set-upstream origin master"
-  alias g.push.devel="hub push --set-upstream origin devel"
   alias g.add="hub add -A"
   alias g.checkout="hub checkout"
   alias g.branch="hub branch"
