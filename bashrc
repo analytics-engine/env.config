@@ -159,8 +159,8 @@ export GPG_TTY
 ### START-Keychain ###
 # Let  re-use ssh-agent and/or gpg-agent between logins
 for i in $(grep -r "BEGIN RSA PRIVATE KEY" $HOME/.ssh/ |awk -F':' '{print $1}'); do
-  /usr/bin/keychain $i
+  /usr/bin/keychain $i >> $LOG 2>&1
 done
-source $HOME/.keychain/$HOSTNAME-sh
+source $HOME/.keychain/$HOSTNAME-sh >> $LOG 2>&1
 ### End-Keychain ###
 

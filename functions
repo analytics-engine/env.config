@@ -1,6 +1,6 @@
 echo "Sourcing .functions file -- ~/.functions"
 
-f_config.dropbox () {
+f.config.dropbox () {
   if [ $(ip link show |grep -c "state UP") -eq 0 ]; then
     echo "Error (.function file):  Dropbox function cannot start"
     echo "No network detected"
@@ -23,7 +23,7 @@ f_config.dropbox () {
   fi
 }
 
-f_config.java () {
+f.config.java () {
   if [ -d /opt/java ]; then
     echo " Java installation found at /opt/java.  Adding Java to PATH" >> $LOG
     export JAVAHOME="/opt/java"
@@ -32,9 +32,9 @@ f_config.java () {
 
 }
 
-f_set.git() {
+f.set.git() {
   if [ -z $1 ]; then
-    echo "Usage:  f_set.git GIT_USERNAME"
+    echo "Usage:  f.set.git GIT_USERNAME"
     return
   fi
 
@@ -58,14 +58,14 @@ git > "
   
 }
 
-f_set.default() {
+f.set.default() {
   PS1=$'\1\r\1\e[7m\1{$(hostname -s)}\1\e[0m\1 '":\$PWD 
 > "
   cd
 
 }
 
-f_set.R() {
+f.set.R() {
   RENV="$HOME/.R.env"
   if [ -f $RENV ]; then
     . $RENV
@@ -97,4 +97,9 @@ f_set.R() {
 #  cd $(echo $WORKDIR |sed 's/ /\ /g')
   cd "$WORKDIR"
   R
+}
+
+
+f.ssh_tunnel() {
+  ssh -D 1080 -f -C -q -N home.remote
 }
